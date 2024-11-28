@@ -1,24 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import LoginForm from "./components/LoginForm";
+import RegistrationForm from "./components/RegistrationForm";
+import { Button, Box } from "@mui/material";
 
 function App() {
+  const [isLogin, setIsLogin] = useState(true);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box sx={{ textAlign: "center", marginTop: 4 }}>
+      {isLogin ? <LoginForm /> : <RegistrationForm />}
+      <Button onClick={() => setIsLogin(!isLogin)} sx={{ mt: 2 }}>
+        {isLogin ? "Go to Registration" : "Go to Login"}
+      </Button>
+    </Box>
   );
 }
 
