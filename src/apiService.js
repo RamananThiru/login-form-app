@@ -12,10 +12,8 @@ export const apiRequest = async (endpoint, method = 'GET', body = null, config =
       ...config,      
     });
 
-    console.log('hello')
     return response.data; // Return response data
   } catch (error) {
-    console.log('hello')
     console.log(error)
     // Handle errors if any
     return Promise.reject(error);
