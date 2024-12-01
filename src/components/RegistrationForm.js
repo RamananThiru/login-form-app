@@ -11,7 +11,6 @@ import {
   CardActions
 } from "@mui/material";
 import { apiRequest } from "../apiService"; // Assuming the apiRequest function is in a file like apiService.js
-import { API_BASE_URL, getDefaultHeaders } from "../config/apiConfig";  // Correct path to apiConfig.js
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -65,45 +64,49 @@ const RegistrationForm = () => {
 
       try {
         // Make the API call for registration
-        const response = await apiRequest("/users", "POST", {
+        const response = await apiRequest('/users', 'POST', {
           user:  {
             name: formData.name,
             email: formData.email,
             password: formData.password,
             password_confirmation: formData.confirmPassword
           }
-        });
+        }, { noAuth: true });
 
-        // console.log( "Response from API", response)
+        console.log( "Response from API", response)
         
         if (response.token) {
           localStorage.setItem("jwtToken", response.token); // Store the token in localStorage
           console.log("Registration successful:", response);
-          setErrorMessage(""); // Clear error message if registration is successful
+          setErrorMessage(''); // Clear error message if registration is successful
         }
       } catch (error) {
-        const errorData = JSON.parse(error.message) // parse string error message to json
-        if (errorData && errorData.errors) {
-          const fieldErrors = errorData.errors;
-          setErrors({
-            name: fieldErrors.name || '',
-            email: fieldErrors.email || '',
-            password: fieldErrors.password || '',
-            confirmPassword: fieldErrors.password_confirmation || '',
-          });
-          setErrorMessage(errorData.message || "Registration failed. Please try again.");
-          console.error("Registration error:", errorData.message);
-
-        } else { // fallback when errors key not sent in response
-          setErrorMessage("Registration failed. Please try again.");
-          console.error("Registration error:", errorData.message);
-
-        }
+        handleErrors(error)
       }
 
       setLoading(false);
     }
   };
+
+  const handleErrors = (errorData) => {
+    
+    if (errorData) {
+      const fieldErrors = errorData.errors;      
+      
+      setErrors({
+        name: fieldErrors.name || '',
+        email: fieldErrors.email || '',
+        password: fieldErrors.password || '',
+        confirmPassword: fieldErrors.password_confirmation || '',
+      });
+      setErrorMessage(errorData.message || "Registration failed. Please try again.");
+      console.error("Registration error:", errorData.message);
+    } else { // fallback when errors key not sent in response
+      setErrorMessage("Registration failed. Please try again.");
+      console.error("Registration error:", errorData.message);
+    }
+  };
+  
 
   return (
     <Container maxWidth="sm">

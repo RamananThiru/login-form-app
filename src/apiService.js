@@ -1,24 +1,23 @@
-import { API_BASE_URL, getDefaultHeaders } from "../src/config/apiConfig";
+// apiRequest.js
+import { axiosInstance } from './axiosInstance';  // Import axiosInstance which already has interceptors
 
-// Common API request function
-export const apiRequest = async (endpoint, method = "GET", body = null) => {
+// API request function
+export const apiRequest = async (endpoint, method = 'GET', body = null, config = {}) => {
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    // Make the actual API call using axiosInstance
+    const response = await axiosInstance({
       method,
-      headers: getDefaultHeaders(),
-      body: body ? JSON.stringify(body) : null,
+      url: endpoint,
+      data: body, 
+      ...config,      
     });
 
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.log('1',JSON.stringify(errorData));
-      throw Error(JSON.stringify(errorData || 'Something Went Wrong')); 
-    }
-
-    // await not used here , as the place of api call will use await
-    return response.json();
+    console.log('hello')
+    return response.data; // Return response data
   } catch (error) {
-    throw new Error(error.message); // Throw error to be handled in the calling function
+    console.log('hello')
+    console.log(error)
+    // Handle errors if any
+    return Promise.reject(error);
   }
 };
